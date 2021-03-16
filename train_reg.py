@@ -123,7 +123,7 @@ def main(args):
             points[:,:, 0:3] = provider.random_scale_point_cloud(points[:,:, 0:3])
             points[:,:, 0:3] = provider.shift_point_cloud(points[:,:, 0:3])
             points = torch.Tensor(points)
-            target = target[:, 0]
+            # target = target[:, 0]
 
             points = points.transpose(2, 1)
             # target = target.transpose(2, 1)
