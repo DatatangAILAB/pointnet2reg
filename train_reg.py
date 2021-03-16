@@ -126,6 +126,7 @@ def main(args):
             target = target[:, 0]
 
             points = points.transpose(2, 1)
+            target = target.transpose(2, 1)
             points, target = points.cuda(), target.cuda()
             optimizer.zero_grad()
 
