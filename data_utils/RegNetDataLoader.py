@@ -64,14 +64,14 @@ class RegNetDataLoader(Dataset):
             point_set, para = self.cache[index]
         else:
             fn = self.datapath[index]
-            point_set = np.loadtxt(fn[0], delimiter=',').astype(np.float32)
+            point_set = np.loadtxt(fn[0], delimiter=' ').astype(np.float32)
             para = np.loadtxt(fn[1], delimiter=' ').astype(np.float32)
             if self.uniform:
                 point_set = farthest_point_sample(point_set, self.npoints)
             else:
                 point_set = point_set[0:self.npoints,:]
 
-            point_set[:, 0:3] = pc_normalize(point_set[:, 0:3])
+            point_set = pc_normalize(point_set)
 
             if len(self.cache) < self.cache_size:
                 self.cache[index] = (point_set, para)
