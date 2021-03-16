@@ -97,7 +97,7 @@ def main(args):
 
     '''DATA LOADING'''
     log_string('Load dataset ...')
-    DATA_PATH = 'data/modelnet40_normal_resampled/'
+    DATA_PATH = 'data/modelnet/'
 
     TRAIN_DATASET = ModelNetDataLoader(root=DATA_PATH, npoint=args.num_point, split='train',
                                                      normal_channel=args.normal)
