@@ -1,0 +1,8 @@
+airplane_0001
+airplane_0002
+bathtub_0001
+bathtub_0002
+bed_0001
+bed_0002
+bench_0001
+bench_0002
