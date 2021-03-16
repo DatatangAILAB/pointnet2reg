@@ -135,7 +135,7 @@ def main(args):
             loss = criterion(pred, target, trans_feat)
             loss.backward()
             optimizer.step()
-            global_step += 1
+            
 
         log_string('Epoch (%d/%s) Loss (%.4f):' % (epoch + 1, args.epoch,loss.item()))
 
