@@ -148,7 +148,7 @@ def main(args):
                 'optimizer_state_dict': optimizer.state_dict(),
             }
             savepath = str(checkpoints_dir) + '/'+str(epoch)+'.pth'
-            print(torch.save(state, savepath))
+            torch.save(state, savepath)
 
             if loss.item() < min_loss:
                 min_loss=loss.item()
