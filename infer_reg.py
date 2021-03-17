@@ -22,6 +22,7 @@ def parse_args():
     '''PARAMETERS'''
     parser = argparse.ArgumentParser('PointNet')
     parser.add_argument('--num_point', type=int, default=1024, help='Point Number [default: 1024]')
+    parser.add_argument('--batch_size', type=int, default=24, help='batch size in training')
     parser.add_argument('--gpu', type=str, default='0', help='specify gpu device')
     parser.add_argument('--log_dir', type=str, default='pointnet2_ssg_normal', help='Experiment root')
     parser.add_argument('--data', type=str, help='data dir need infer')
