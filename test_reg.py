@@ -72,6 +72,7 @@ def main(args):
 
     '''MODEL LOADING'''
     num_reg = 7
+    model_name = os.listdir(experiment_dir+'/logs')[0].split('.')[0]
     MODEL = importlib.import_module(model_name)
     
     reg = MODEL.get_model(num_reg).cuda()
