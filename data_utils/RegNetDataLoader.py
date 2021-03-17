@@ -46,6 +46,7 @@ class RegNetDataLoader(Dataset):
         shape_ids['train'] = [line.rstrip() for line in open(os.path.join(self.root, 'train.txt'))]
         shape_ids['test'] = [line.rstrip() for line in open(os.path.join(self.root, 'test.txt'))]
 
+
         assert (split == 'train' or split == 'test')
         shape_names = ['_'.join(x.split('_')[0:-1]) for x in shape_ids[split]]
         # list of (shape_name, shape_txt_file_path) tuple
@@ -81,6 +82,29 @@ class RegNetDataLoader(Dataset):
     def __getitem__(self, index):
         return self._get_item(index)
 
+
+class RegNetInferDataLoader(Dataset):
+    def __init__(self, root,  npoint=1024):
+        self.root = root
+        self.npoints = npoint
+
+        files = [line.rstrip() for line in open(os.path.join(self.root, 'infer.txt'))]
+        self.datapath = [os.path.join(self.root, file) for file in files]
+        print('The size of data is %d'%len(self.datapath))
+
+    def __len__(self):
+        return len(self.datapath)
+
+    def _get_item(self, index):
+        fn = self.datapath[index]
+        point_set = np.loadtxt(fn, delimiter=' ').astype(np.float32)
+        point_set = point_set[0:self.npoints,:]
+        point_set = pc_normalize(point_set)
+
+        return point_set
+
+    def __getitem__(self, index):
+        return self._get_item(index)
 
 
 
