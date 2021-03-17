@@ -113,6 +113,7 @@ def main(args):
     scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=20, gamma=0.7)
 
     '''TRANING'''
+    min_loss=1000
     logger.info('Start training...')
     for epoch in range(start_epoch,args.epoch):
         scheduler.step()
@@ -138,6 +139,21 @@ def main(args):
             
 
         log_string('Epoch (%d/%s) Loss (%.4f):' % (epoch + 1, args.epoch,loss.item()))
+
+        with torch.no_grad():
+            if loss.item() < min_loss:
+                min_loss=loss.item()
+                logger.info('Save model...')
+                savepath = str(checkpoints_dir) + '/best_model.pth'
+                log_string('Saving at %s'% savepath)
+                state = {
+                    'epoch': epoch,
+                    'loss': loss.item(),
+                    'model_state_dict': reg.state_dict(),
+                    'optimizer_state_dict': optimizer.state_dict(),
+                }
+                torch.save(state, savepath)
+
 
     logger.info('End of training...')
 
