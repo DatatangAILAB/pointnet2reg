@@ -68,7 +68,7 @@ def main(args):
     checkpoint = torch.load(str(experiment_dir) + '/cps/best_model.pth')
     reg.load_state_dict(checkpoint['model_state_dict'])
 
-    for j, points in tqdm(enumerate(testDataLoader), total=len(testDataLoader)):
+    for j, points in tqdm(enumerate(inferDataLoader), total=len(inferDataLoader)):
         points = points.transpose(2, 1)
         points = points.cuda()
         reg = model.eval()
