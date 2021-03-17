@@ -77,7 +77,7 @@ def main(args):
     
     reg = MODEL.get_model(num_reg).cuda()
 
-    checkpoint = torch.load(str(experiment_dir) + '/cpks/best_model.pth')
+    checkpoint = torch.load(str(experiment_dir) + '/cps/best_model.pth')
     classifier.load_state_dict(checkpoint['model_state_dict'])
 
     with torch.no_grad():
