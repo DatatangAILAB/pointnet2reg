@@ -45,7 +45,7 @@ def main(args):
 
     '''CREATE DIR'''
     timestr = str(datetime.datetime.now().strftime('%Y-%m-%d_%H-%M'))
-    experiment_dir = Path('./log/')
+    experiment_dir = Path('./log/').absolute()
     experiment_dir.mkdir(exist_ok=True)
     experiment_dir = experiment_dir.joinpath('reg')
     experiment_dir.mkdir(exist_ok=True)
@@ -147,9 +147,6 @@ def main(args):
                 'model_state_dict': reg.state_dict(),
                 'optimizer_state_dict': optimizer.state_dict(),
             }
-            savepath = '/content/'+str(epoch)+'.pth'
-            torch.save(state, savepath)
-
             if loss.item() < min_loss:
                 min_loss=loss.item()
                 logger.info('Save model...')
