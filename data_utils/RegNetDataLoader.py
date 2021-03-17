@@ -111,8 +111,8 @@ class RegNetInferDataLoader(Dataset):
 if __name__ == '__main__':
     import torch
 
-    data = RegNetDataLoader('data/treenet/',split='train', uniform=False)
-    DataLoader = torch.utils.data.DataLoader(data, batch_size=12, shuffle=True)
-    for point,label in DataLoader:
-        print(point.shape)
-        print(label.shape)
+    data = RegNetInferDataLoader('data/treenet/')
+    DataLoader = torch.utils.data.DataLoader(data, batch_size=12, shuffle=False)
+    for points in DataLoader:
+        print(points.shape)
+        
