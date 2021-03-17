@@ -72,7 +72,7 @@ def main(args):
 
     '''MODEL LOADING'''
     num_reg = 7
-    MODEL = importlib.import_module(args.model)
+    MODEL = importlib.import_module(model_name)
     
     reg = MODEL.get_model(num_reg).cuda()
 
