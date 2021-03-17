@@ -141,18 +141,22 @@ def main(args):
         log_string('Epoch (%d/%s) Loss (%.4f):' % (epoch + 1, args.epoch,loss.item()))
 
         with torch.no_grad():
+            state = {
+                'epoch': epoch,
+                'loss': loss.item(),
+                'model_state_dict': reg.state_dict(),
+                'optimizer_state_dict': optimizer.state_dict(),
+            }
+            savepath = str(checkpoints_dir) + '/'+str(epoch)+'.pth'
+            torch.save(state, savepath)
+
             if loss.item() < min_loss:
                 min_loss=loss.item()
                 logger.info('Save model...')
-                savepath = str(checkpoints_dir) + '/best_model.pth'
-                log_string('Saving at %s'% savepath)
-                state = {
-                    'epoch': epoch,
-                    'loss': loss.item(),
-                    'model_state_dict': reg.state_dict(),
-                    'optimizer_state_dict': optimizer.state_dict(),
-                }
-                torch.save(state, savepath)
+                bestsavepath = str(checkpoints_dir) + '/best_model.pth'
+                log_string('Saving at %s'% bestsavepath)
+                
+                torch.save(state, bestsavepath)
 
 
     logger.info('End of training...')
