@@ -147,6 +147,9 @@ def main(args):
                 'model_state_dict': reg.state_dict(),
                 'optimizer_state_dict': optimizer.state_dict(),
             }
+            savepath = str(checkpoints_dir) + '/'+str(epoch)+'.pth'
+            torch.save(state, savepath)
+
             if loss.item() < min_loss:
                 min_loss=loss.item()
                 logger.info('Save model...')
