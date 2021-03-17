@@ -71,7 +71,6 @@ def main(args):
     for j, points in tqdm(enumerate(inferDataLoader), total=len(inferDataLoader)):
         points = points.transpose(2, 1)
         points = points.cuda()
-        reg = model.eval()
         pred, _ = reg(points)
         print(pred)
 
