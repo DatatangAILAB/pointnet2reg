@@ -145,15 +145,11 @@ def main(args):
                 'model_state_dict': reg.state_dict(),
                 'optimizer_state_dict': optimizer.state_dict(),
             }
-            savepath = '/content/pointnet2reg/log/pointnet2_reg/cps/'+str(epoch)+'.pth'
-            torch.save(state, savepath)
-
             if loss.item() < min_loss:
                 min_loss=loss.item()
                 logger.info('Save model...')
                 bestsavepath = str(checkpoints_dir) + '/best_model.pth'
-                log_string('Saving at %s'% bestsavepath)
-                
+                log_string('Saving at %s'% bestsavepath)     
                 torch.save(state, bestsavepath)
 
 
