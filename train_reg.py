@@ -71,7 +71,7 @@ def main(args):
 
     '''DATA LOADING'''
     log_string('Load dataset ...')
-    DATA_PATH = 'data/treenet/'
+    DATA_PATH = 'data/minibus/'
 
     TRAIN_DATASET = RegNetDataLoader(root=DATA_PATH, npoint=args.num_point, split='train')
     TEST_DATASET = RegNetDataLoader(root=DATA_PATH, npoint=args.num_point, split='test')
