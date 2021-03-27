@@ -49,7 +49,7 @@ def test(model, loader):
         pred, _ = reg(points)
         mean_err.append(F.l1_loss(pred,target))
 
-    test_err = np.mean(mean_err)
+    test_err = np.mean(np.asarray(mean_err))
     return test_err
 
 def main(args):
@@ -155,7 +155,7 @@ def main(args):
             loss.backward()
             optimizer.step()
             
-        train_err = np.mean(mean_err)
+        train_err = np.mean(np.asarray(mean_err))
         log_string('Epoch (%d/%s) Train_ACC (%.4f):' % (epoch + 1, args.epoch,train_err))
 
         with torch.no_grad():
@@ -169,7 +169,7 @@ def main(args):
                 'model_state_dict': reg.state_dict(),
                 'optimizer_state_dict': optimizer.state_dict(),
             }
-            
+
             if test_err < min_loss:
                 min_loss=test_err
                 logger.info('Save model...')
