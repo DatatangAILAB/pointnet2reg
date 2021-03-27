@@ -10,7 +10,7 @@ class get_model(nn.Module):
         self.feat = PointNetEncoder(global_feat=True, feature_transform=True, channel=3)
         self.fc1 = nn.Linear(1024, 512)
         self.fc2 = nn.Linear(512, 256)
-        self.fc3 = nn.Linear(256, k)
+        self.fc3 = nn.Linear(256, num_reg)
         self.dropout = nn.Dropout(p=0.4)
         self.bn1 = nn.BatchNorm1d(512)
         self.bn2 = nn.BatchNorm1d(256)
