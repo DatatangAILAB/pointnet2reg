@@ -7,7 +7,7 @@ class get_model(nn.Module):
     def __init__(self, num_reg, normal_channel=True):
         super(get_model, self).__init__()
         self.normal_channel = normal_channel
-        self.feat = PointNetEncoder(global_feat=True, feature_transform=True, channel=channel)
+        self.feat = PointNetEncoder(global_feat=True, feature_transform=True, channel=3)
         self.fc1 = nn.Linear(1024, 512)
         self.fc2 = nn.Linear(512, 256)
         self.fc3 = nn.Linear(256, k)
