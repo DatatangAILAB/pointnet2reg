@@ -15,6 +15,7 @@ import sys
 import provider
 import importlib
 import shutil
+import torch.nn.functional as F
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 ROOT_DIR = BASE_DIR
@@ -34,6 +35,22 @@ def parse_args():
     parser.add_argument('--log_dir', type=str, default=None, help='experiment root')
     parser.add_argument('--decay_rate', type=float, default=1e-4, help='decay rate [default: 1e-4]')
     return parser.parse_args()
+
+def test(model, loader):
+    mean_err = []
+    for j, data in tqdm(enumerate(loader), total=len(loader)):
+        points, target = data
+        points = points.data.numpy()
+        points = torch.Tensor(points)
+        points = points.transpose(2, 1)
+        points, target = points.cuda(), target.cuda()
+
+        reg = model.eval()
+        pred, _ = reg(points)
+        mean_err.append(F.l1_loss(pred,target))
+
+    test_err = np.mean(mean_err)
+    return test_err
 
 def main(args):
     def log_string(str):
@@ -114,13 +131,14 @@ def main(args):
     min_loss=1000
     logger.info('Start training...')
     for epoch in range(start_epoch,args.epoch):
+        mean_err = []
         scheduler.step()
         for batch_id, data in tqdm(enumerate(trainDataLoader, 0), total=len(trainDataLoader), smoothing=0.9):
             points, target = data
             points = points.data.numpy()
             points = provider.random_point_dropout(points)
-            points[:,:, 0:3] = provider.random_scale_point_cloud(points[:,:, 0:3])
-            points[:,:, 0:3] = provider.shift_point_cloud(points[:,:, 0:3])
+            # points[:,:, 0:3] = provider.random_scale_point_cloud(points[:,:, 0:3])
+            # points[:,:, 0:3] = provider.shift_point_cloud(points[:,:, 0:3])
             points = torch.Tensor(points)
 
             points = points.transpose(2, 1)
@@ -132,21 +150,28 @@ def main(args):
             pred, trans_feat = reg(points)
 
             loss = criterion(pred, target, trans_feat)
+            mean_err.append(F.l1_loss(pred,target))
+
             loss.backward()
             optimizer.step()
             
-
-        log_string('Epoch (%d/%s) Loss (%.4f):' % (epoch + 1, args.epoch,loss.item()))
+        train_err = np.mean(mean_err)
+        log_string('Epoch (%d/%s) Train_ACC (%.4f):' % (epoch + 1, args.epoch,train_err))
 
         with torch.no_grad():
+            test_err=test(reg.eval(), testDataLoader)
+            log_string('Test_ACC (%.4f):' % (test_err))
+
             state = {
                 'epoch': epoch,
-                'loss': loss.item(),
+                'train_err': train_err,
+                'test_err': test_err,
                 'model_state_dict': reg.state_dict(),
                 'optimizer_state_dict': optimizer.state_dict(),
             }
-            if loss.item() < min_loss:
-                min_loss=loss.item()
+            
+            if test_err < min_loss:
+                min_loss=test_err
                 logger.info('Save model...')
                 bestsavepath = str(checkpoints_dir) + '/best_model.pth'
                 log_string('Saving at %s'% bestsavepath)     
