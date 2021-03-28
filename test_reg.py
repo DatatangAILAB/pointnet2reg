@@ -41,8 +41,8 @@ def test(model, loader):
         mean_err.append(F.l1_loss(pred,target).item())
         print("\n\nbatch",j)
         print("test_err",F.l1_loss(pred,target).item())
-        print("pred\n",pred)
-        print("target\n",target)
+        print(pred-target)
+    
 
     test_err = np.mean(np.asarray(mean_err))
     return test_err
