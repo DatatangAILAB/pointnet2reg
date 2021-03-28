@@ -90,8 +90,8 @@ def main(args):
     log_string('Load dataset ...')
     DATA_PATH = 'data/minibus/'
 
-    TRAIN_DATASET = RegNetDataLoader(root=DATA_PATH, npoint=args.num_point, split='train')
-    TEST_DATASET = RegNetDataLoader(root=DATA_PATH, npoint=args.num_point, split='test')
+    TRAIN_DATASET = RegNetDataLoader(root=DATA_PATH, uniform=True,npoint=args.num_point, split='train')
+    TEST_DATASET = RegNetDataLoader(root=DATA_PATH, uniform=True, npoint=args.num_point, split='test')
     trainDataLoader = torch.utils.data.DataLoader(TRAIN_DATASET, batch_size=args.batch_size, shuffle=True, num_workers=4)
     testDataLoader = torch.utils.data.DataLoader(TEST_DATASET, batch_size=args.batch_size, shuffle=False, num_workers=4)
 
