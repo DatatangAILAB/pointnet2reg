@@ -81,6 +81,9 @@ class RegNetDataLoader(Dataset):
 
             para = np.loadtxt(fn[1], delimiter=' ').astype(np.float32)
             para=para[6:7]
+
+            dd= lambda t: t+np.pi if t<0 else t
+            para=dd(para)
             
 
             if len(self.cache) < self.cache_size:
@@ -102,5 +105,5 @@ if __name__ == '__main__':
         print(point.shape)
         # print(point)
         print(para.shape)
-        # print(para)
+        print(para)
         
