@@ -47,7 +47,7 @@ def test(model, loader):
 
         reg = model.eval()
         pred, _ = reg(points)
-        mean_err.append(F.l1_loss(pred,target))
+        mean_err.append(F.l1_loss(pred,target).item())
 
     test_err = np.mean(np.asarray(mean_err))
     return test_err
@@ -150,7 +150,7 @@ def main(args):
             pred, trans_feat = reg(points)
 
             loss = criterion(pred, target, trans_feat)
-            mean_err.append(F.l1_loss(pred,target))
+            mean_err.append(F.l1_loss(pred,target).item())
 
             loss.backward()
             optimizer.step()
