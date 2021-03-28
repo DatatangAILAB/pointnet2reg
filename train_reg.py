@@ -90,8 +90,8 @@ def main(args):
     log_string('Load dataset ...')
     DATA_PATH = 'data/minibus/'
 
-    TRAIN_DATASET = RegNetDataLoader(root=DATA_PATH, uniform=True,npoint=args.num_point, split='train')
-    TEST_DATASET = RegNetDataLoader(root=DATA_PATH, uniform=True, npoint=args.num_point, split='test')
+    TRAIN_DATASET = RegNetDataLoader(root=DATA_PATH, uniform=False,npoint=args.num_point, split='train')
+    TEST_DATASET = RegNetDataLoader(root=DATA_PATH, uniform=False, npoint=args.num_point, split='test')
     trainDataLoader = torch.utils.data.DataLoader(TRAIN_DATASET, batch_size=args.batch_size, shuffle=True, num_workers=4)
     testDataLoader = torch.utils.data.DataLoader(TEST_DATASET, batch_size=args.batch_size, shuffle=False, num_workers=4)
 
@@ -156,11 +156,11 @@ def main(args):
             optimizer.step()
             
         train_err = np.mean(np.asarray(mean_err))
-        log_string('Epoch (%d/%s) Train_ACC (%.4f):' % (epoch + 1, args.epoch,train_err))
+        log_string('Epoch (%d/%s) Train_Error (%.4f):' % (epoch + 1, args.epoch,train_err))
 
         with torch.no_grad():
             test_err=test(reg.eval(), testDataLoader)
-            log_string('Test_ACC (%.4f):' % (test_err))
+            log_string('Test_Error (%.4f):' % (test_err))
 
             state = {
                 'epoch': epoch,

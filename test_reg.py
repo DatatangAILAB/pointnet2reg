@@ -28,17 +28,24 @@ def parse_args():
     return parser.parse_args()
 
 def test(model, loader):
-    total_loss = 0.0
-    num=0.0
+    mean_err = []
     for j, data in tqdm(enumerate(loader), total=len(loader)):
         points, target = data
+        points = points.data.numpy()
+        points = torch.Tensor(points)
         points = points.transpose(2, 1)
         points, target = points.cuda(), target.cuda()
+
         reg = model.eval()
         pred, _ = reg(points)
-        total_loss+=F.mse_loss(pred, target)
-        num+=1
-    return total_loss/num
+        mean_err.append(F.l1_loss(pred,target).item())
+        print("\n\nbatch",j)
+        print("test_err",F.l1_loss(pred,target).item())
+        print("pred\n",pred)
+        print("target\n",target)
+
+    test_err = np.mean(np.asarray(mean_err))
+    return test_err
 
 
 def main(args):
@@ -50,7 +57,7 @@ def main(args):
     os.environ["CUDA_VISIBLE_DEVICES"] = args.gpu
 
     '''CREATE DIR'''
-    experiment_dir = './log/' + args.log_dir
+    experiment_dir = '/content/drive/MyDrive/log/' + args.log_dir
 
     '''LOG'''
     args = parse_args()
@@ -66,12 +73,12 @@ def main(args):
 
     '''DATA LOADING'''
     log_string('Load dataset ...')
-    DATA_PATH = 'data/treenet/'
-    TEST_DATASET = RegNetDataLoader(root=DATA_PATH, npoint=args.num_point, split='test')
+    DATA_PATH = 'data/minibus/'
+    TEST_DATASET = RegNetDataLoader(root=DATA_PATH, npoint=args.num_point, uniform=False, split='test')
     testDataLoader = torch.utils.data.DataLoader(TEST_DATASET, batch_size=args.batch_size, shuffle=False, num_workers=4)
 
     '''MODEL LOADING'''
-    num_reg = 7
+    num_reg = 1
     model_name = os.listdir(experiment_dir+'/logs')[0].split('.')[0]
     MODEL = importlib.import_module(model_name)
     
