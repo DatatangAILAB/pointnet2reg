@@ -109,9 +109,11 @@ def main(args):
         start_epoch = checkpoint['epoch']
         reg.load_state_dict(checkpoint['model_state_dict'])
         log_string('Use pretrain model')
+        min_loss=checkpoint['test_err']
     except:
         log_string('No existing model, starting training from scratch...')
         start_epoch = 0
+        min_loss=1000
 
 
     if args.optimizer == 'Adam':
@@ -128,7 +130,7 @@ def main(args):
     scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=20, gamma=0.7)
 
     '''TRANING'''
-    min_loss=1000
+    
     logger.info('Start training...')
     for epoch in range(start_epoch,args.epoch):
         mean_err = []

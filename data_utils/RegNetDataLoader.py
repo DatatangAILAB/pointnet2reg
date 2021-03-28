@@ -82,6 +82,7 @@ class RegNetDataLoader(Dataset):
             para = np.loadtxt(fn[1], delimiter=' ').astype(np.float32)
             para=para[6:7]
 
+            ##不考虑旋转的相对方向因素
             dd= lambda t: t+np.pi if t<0 else t
             para=dd(para)
             
