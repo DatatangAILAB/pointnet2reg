@@ -109,9 +109,9 @@ def main(args):
         start_epoch = checkpoint['epoch']
         reg.load_state_dict(checkpoint['model_state_dict'])
         log_string('Use pretrain model')
-        log_string('start at epoch:%d'.format(start_epoch))
+        log_string('start at epoch:%d' % (start_epoch))
         min_loss=checkpoint['test_err']
-        log_string('start at test_err:%.4f'.format(min_loss))
+        log_string('start at test_err:%.4f' % (min_loss))
     except:
         log_string('No existing model, starting training from scratch...')
         start_epoch = 0
