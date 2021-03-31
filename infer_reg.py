@@ -60,6 +60,7 @@ def main(args):
     MODEL = importlib.import_module(model_name)
     
     reg = MODEL.get_model(num_reg).cuda()
+    reg.eval()
 
     checkpoint = torch.load(str(experiment_dir) + '/cps/best_model.pth')
     reg.load_state_dict(checkpoint['model_state_dict'])
