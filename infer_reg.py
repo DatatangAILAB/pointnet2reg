@@ -72,10 +72,10 @@ def main(args):
     points_tensor=torch.Tensor(points)
     points_tensor = points_tensor.transpose(2, 1)
     points_tensor = points_tensor.cuda()
-    print(points_tensor.size())
-    print(points_tensor)
+    # print(points_tensor.size())
+    # print(points_tensor)
     pred, _ = reg(points_tensor)
-    print(pred)
+    print(pred.numpy()[0,0])
 
 
 
