@@ -51,7 +51,7 @@ def main(args):
     print(args)
 
     '''DATA LOADING'''
-    print('Load dataset ...')
+    print('Load data ...',args.data)
     DATA_PATH = 'data/minibus/'
     
     '''MODEL LOADING'''
@@ -64,7 +64,7 @@ def main(args):
     checkpoint = torch.load(str(experiment_dir) + '/cps/best_model.pth')
     reg.load_state_dict(checkpoint['model_state_dict'])
 
-    points = np.loadtxt(fn[0], delimiter=' ').astype(np.float32)
+    points = np.loadtxt(args.data, delimiter=' ').astype(np.float32)
     points[:, 0:3] = pc_normalize(points[:, 0:3])
     points=sample_points(points,args.num_point)
     points_tensor=torch.Tensor(points)
