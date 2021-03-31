@@ -80,11 +80,11 @@ class RegNetDataLoader(Dataset):
             point_set=sample_points(point_set,self.npoints)
 
             para = np.loadtxt(fn[1], delimiter=' ').astype(np.float32)
-            # para=para[6:7]
+            para=para[6:7]
 
             # 不考虑旋转的相对方向因素
-            # dd= lambda t: t+np.pi if t<0 else t
-            # para=dd(para)
+            dd= lambda t: t+np.pi if t<0 else t
+            para=dd(para)
             
 
             if len(self.cache) < self.cache_size:
