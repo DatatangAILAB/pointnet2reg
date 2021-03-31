@@ -1,14 +1,7 @@
-"""
-Author: Benny
-Date: Nov 2019
-"""
-from data_utils.RegNetDataLoader import RegNetInferDataLoader
 import argparse
 import numpy as np
 import os
 import torch
-import logging
-from tqdm import tqdm
 import sys
 import importlib
 
@@ -17,12 +10,25 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 ROOT_DIR = BASE_DIR
 sys.path.append(os.path.join(ROOT_DIR, 'models'))
 
+def sample_points(points,npoint):
+    if points.shape[0] < npoint:
+        return np.concatenate([points, np.zeros((npoint-points.shape[0], 3), dtype=np.float32)], axis=0)
+    else:
+        idx = np.arange(points.shape[0])
+        np.random.shuffle(idx)
+        return points[idx[0:npoint]]
+
+def pc_normalize(pc):
+    centroid = np.mean(pc, axis=0)
+    pc = pc - centroid
+    m = np.max(np.sqrt(np.sum(pc**2, axis=1)))
+    pc = pc / m
+    return pc
 
 def parse_args():
     '''PARAMETERS'''
     parser = argparse.ArgumentParser('PointNet')
     parser.add_argument('--num_point', type=int, default=1024, help='Point Number [default: 1024]')
-    parser.add_argument('--batch_size', type=int, default=24, help='batch size in training')
     parser.add_argument('--gpu', type=str, default='0', help='specify gpu device')
     parser.add_argument('--log_dir', type=str, default='pointnet2_ssg_normal', help='Experiment root')
     parser.add_argument('--data', type=str, help='data dir need infer')
@@ -38,28 +44,18 @@ def main(args):
     os.environ["CUDA_VISIBLE_DEVICES"] = args.gpu
 
     '''CREATE DIR'''
-    experiment_dir = './log/' + args.log_dir
+    experiment_dir = '/content/drive/MyDrive/log/' + args.log_dir
 
-    '''LOG'''
+    '''arg'''
     args = parse_args()
-    logger = logging.getLogger("Model")
-    logger.setLevel(logging.INFO)
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    file_handler = logging.FileHandler('%s/eval.txt' % experiment_dir)
-    file_handler.setLevel(logging.INFO)
-    file_handler.setFormatter(formatter)
-    logger.addHandler(file_handler)
-    log_string('PARAMETER ...')
-    log_string(args)
+    print(args)
 
     '''DATA LOADING'''
-    log_string('Load dataset ...')
-    DATA_PATH = 'data/treenet/'
-    INFER_DATASET = RegNetInferDataLoader(root=DATA_PATH, npoint=args.num_point)
-    inferDataLoader = torch.utils.data.DataLoader(INFER_DATASET, batch_size=args.batch_size, shuffle=False, num_workers=4)
-
+    print('Load dataset ...')
+    DATA_PATH = 'data/minibus/'
+    
     '''MODEL LOADING'''
-    num_reg = 7
+    num_reg = 1
     model_name = os.listdir(experiment_dir+'/logs')[0].split('.')[0]
     MODEL = importlib.import_module(model_name)
     
@@ -68,11 +64,14 @@ def main(args):
     checkpoint = torch.load(str(experiment_dir) + '/cps/best_model.pth')
     reg.load_state_dict(checkpoint['model_state_dict'])
 
-    for j, points in tqdm(enumerate(inferDataLoader), total=len(inferDataLoader)):
-        points = points.transpose(2, 1)
-        points = points.cuda()
-        pred, _ = reg(points)
-        print(pred)
+    points = np.loadtxt(fn[0], delimiter=' ').astype(np.float32)
+    points[:, 0:3] = pc_normalize(points[:, 0:3])
+    points=sample_points(points,args.num_point)
+    points_tensor=torch.Tensor(points)
+    points_tensor = points_tensor.transpose(2, 1)
+    points_tensor = points_tensor.cuda()
+    pred, _ = reg(points_tensor)
+    print(pred)
 
 
 
