@@ -34,7 +34,7 @@ def test(model, loader):
         points = points.data.numpy()
         points = torch.Tensor(points)
         points = points.transpose(2, 1)
-        points, target = points.cuda(), target.cuda()
+        # points, target = points.cuda(), target.cuda()
 
         reg = model.eval()
         pred, _ = reg(points)
@@ -54,7 +54,7 @@ def main(args):
         print(str)
 
     '''HYPER PARAMETER'''
-    os.environ["CUDA_VISIBLE_DEVICES"] = args.gpu
+    #os.environ["CUDA_VISIBLE_DEVICES"] = args.gpu
 
     '''CREATE DIR'''
     experiment_dir = '/content/drive/MyDrive/log/' + args.log_dir
@@ -82,7 +82,7 @@ def main(args):
     model_name = os.listdir(experiment_dir+'/logs')[0].split('.')[0]
     MODEL = importlib.import_module(model_name)
     
-    reg = MODEL.get_model(num_reg).cuda()
+    reg = MODEL.get_model(num_reg)
 
     checkpoint = torch.load(str(experiment_dir) + '/cps/best_model.pth', map_location=lambda storage, loc: storage)
     reg.load_state_dict(checkpoint['model_state_dict'])
