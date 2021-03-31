@@ -67,6 +67,7 @@ def main(args):
     points = np.loadtxt(args.data, delimiter=' ').astype(np.float32)
     points[:, 0:3] = pc_normalize(points[:, 0:3])
     points=sample_points(points,args.num_point)
+    points=points.reshape(1,-1,3)
     points_tensor=torch.Tensor(points)
     points_tensor = points_tensor.transpose(2, 1)
     points_tensor = points_tensor.cuda()
