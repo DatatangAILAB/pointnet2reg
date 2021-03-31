@@ -68,7 +68,7 @@ def main(args):
 
     with torch.no_grad():
         import time 
-        begin = time.process_time
+        begin = time.process_time()
         points = np.loadtxt(args.data, delimiter=' ').astype(np.float32)
         points[:, 0:3] = pc_normalize(points[:, 0:3])
         points=sample_points(points,args.num_point)
@@ -80,7 +80,7 @@ def main(args):
         # print(points_tensor)
         pred, _ = reg(points_tensor)
         print("result",pred.cpu().numpy()[0,0])
-        end = time.process_time
+        end = time.process_time()
         print("time:",end-begin)
 
 
