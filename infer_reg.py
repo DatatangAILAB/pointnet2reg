@@ -75,7 +75,7 @@ def main(args):
     # print(points_tensor.size())
     # print(points_tensor)
     pred, _ = reg(points_tensor)
-    print(pred.numpy()[0,0])
+    print(pred.cpu().numpy()[0,0])
 
 
 
