@@ -65,7 +65,10 @@ def main(args):
     checkpoint = torch.load(str(experiment_dir) + '/cps/best_model.pth')
     reg.load_state_dict(checkpoint['model_state_dict'])
 
+
     with torch.no_grad():
+        import time 
+        begin = time.clock()
         points = np.loadtxt(args.data, delimiter=' ').astype(np.float32)
         points[:, 0:3] = pc_normalize(points[:, 0:3])
         points=sample_points(points,args.num_point)
@@ -76,7 +79,9 @@ def main(args):
         # print(points_tensor.size())
         # print(points_tensor)
         pred, _ = reg(points_tensor)
-        print(pred.cpu().numpy()[0,0])
+        print("result",pred.cpu().numpy()[0,0])
+        end = time.clock()
+        print("time:",end-begin)
 
 
 
